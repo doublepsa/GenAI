@@ -1,0 +1,3 @@
+[submodule "data/LectureBank"]
+	path = data/LectureBank
+	url = https://github.com/Yale-LILY/LectureBank.git

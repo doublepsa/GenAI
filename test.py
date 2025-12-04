@@ -9,26 +9,38 @@ import gensim
 from gensim import corpora
 from gensim.models import CoherenceModel
 import string
-import loader
+import src.loader as loader
 # import pyLDAvis.gensim_models as gensimvis
 # import pyLDAvis
 
 
+def get_slide_data():
+    datadir="data/generative-ai/"
 
-datadir="data/generative-ai"
-
-tylers_notes={}
-slides={}
-for folder in os.listdir(datadir):
-    try:
-        tylers_notes[folder]=loader.load_text(os.path.join(datadir,folder,"tylers-notes.md"))
-        slides[folder]=loader.load_pdf(os.path.join(datadir,folder,"slides.pdf"))[0]
-    except:
-        pass
+    tylers_notes=[]
+    slides=[]
+    for folder in os.listdir(datadir):
+        try:
+            tylers_notes.append(loader.load_text(os.path.join(datadir,folder,"tylers-notes.md")))
+            # slides.append(loader.load_pdf(os.path.join(datadir,folder,"slides.pdf"))[0])
+        except:
+            pass
+    # slides=[]
+    # for s in os.listdir(datadir):
+        # if os.path.isfile(os.path.join(datadir,s)):
+            # try:
+                # slides.append(loader.load_pdf(os.path.join(datadir,s))[0])
+                # print(f'finished: {s}')
+            # except KeyboardInterrupt as e:
+                # raise e
+            # except:
+                # print(f"failed: {s}")
+    # return slides
+    return tylers_notes+slides
 
 class dirichlet:
 
-    def __init__(self,texts,num_topics=20,random_state=100,chunksize=1000,passes=50,iterations=100):
+    def __init__(self,texts,num_topics=10,random_state=100,chunksize=1000,passes=50,iterations=100):
         self.stop_words = stopwords.words('english')
         self.nlp=spacy.load("en_core_web_md")
         self.texts=texts
@@ -90,22 +102,34 @@ class dirichlet:
 
 # text_list = yelp_review['text'].tolist()
 # tokenized_reviews = lemmatization(text_list)
+if __name__=='__main__':
+    slides=get_slide_data()
+    print('starting LDA')
+    d=dirichlet(slides,num_topics=5)
 
-d=dirichlet(list(tylers_notes.values())+list(slides.values()))
+    # print(d.clean_text(list(slides.values())[0]))
+    # print(slides)
+    total_docs = len(d.doc_term_matrix)
+    if total_docs > 0:
+        print('\nPerplexity:', d.lda_model.log_perplexity(
+            d.doc_term_matrix, total_docs=total_docs))
+        coherence_model_lda = CoherenceModel(
+            model=d.lda_model,
+            texts=d.lemmas,
+            dictionary=d.dictionary,
+            coherence='c_v'
+        )
+        coherence_lda = coherence_model_lda.get_coherence()
+        print('Coherence:', coherence_lda)
 
-# print(d.clean_text(list(slides.values())[0]))
-# print(slides)
-total_docs = len(d.doc_term_matrix)
-if total_docs > 0:
-    print('\nPerplexity:', d.lda_model.log_perplexity(
-        d.doc_term_matrix, total_docs=total_docs))
-    coherence_model_lda = CoherenceModel(
-        model=d.lda_model,
-        texts=d.lemmas,
-        dictionary=d.dictionary,
-        coherence='c_v'
-    )
-    coherence_lda = coherence_model_lda.get_coherence()
-    print('Coherence:', coherence_lda)
-else:
-    print("No documents to evaluate coherence or perplexity.")
+        topic_dict={}
+        for doc in d.doc_term_matrix:
+            topic_weights=d.lda_model[doc]
+            for topic,weight in topic_weights:
+                if topic in topic_dict:
+                    topic_dict[topic]+=weight
+                else:
+                    topic_dict[topic]=weight
+        print(topic_dict)
+    else:
+        print("No documents to evaluate coherence or perplexity.")

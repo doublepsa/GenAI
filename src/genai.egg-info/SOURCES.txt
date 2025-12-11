@@ -1,0 +1,11 @@
+README.md
+pyproject.toml
+src/genai/__init__.py
+src/genai/db.py
+src/genai/llm.py
+src/genai/loader.py
+src/genai.egg-info/PKG-INFO
+src/genai.egg-info/SOURCES.txt
+src/genai.egg-info/dependency_links.txt
+src/genai.egg-info/requires.txt
+src/genai.egg-info/top_level.txt

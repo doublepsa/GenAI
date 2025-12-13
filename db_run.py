@@ -1,9 +1,9 @@
-from db_connection import MongoDBConnection
-from db_add import add_course, add_lecture, add_user, add_note
+from db_configs.db_connection import MongoDBConnection
+from db_configs.db_add import add_course, add_lecture, add_user, add_note
 
 # 1. Connect
 if not MongoDBConnection.setup():
-    print("❌ Could not connect to database. Exiting.")
+    print("Could not connect to database. Exiting.")
     exit()
 
 student = add_user("johnny_coder", "john@coder.com")

@@ -1,4 +1,4 @@
-from schemas import User, Lecture, Course, Slide, Note
+from db_configs.schemas import User, Lecture, Course, Slide, Note
 from mongoengine import NotUniqueError
 import os
 
@@ -15,11 +15,10 @@ def add_course(name: str) -> Course | None:
         print(f"Error adding course: {e}")
         return None
 
-def add_lecture(course_obj: Course, title: str, number: str, content: str = None) -> Lecture | None:
+def add_lecture(course_obj: Course, number: str, content: str = None) -> Lecture | None:
     try:
         # Create the lecture with the link to the course
         new_lecture = Lecture(
-            title=title,
             lecture_number=number,
             content=content,
             course=course_obj # <--- Link established here
@@ -29,7 +28,7 @@ def add_lecture(course_obj: Course, title: str, number: str, content: str = None
         # Optional: Add this lecture to the Course's list of lectures (Double linking)
         course_obj.update(push__lectures=new_lecture)
         
-        print(f"Lecture '{title}' added to Course '{course_obj.name}'.")
+        print(f"Lecture '{number}' added to Course '{course_obj.name}'.")
         return new_lecture
     except Exception as e:
         print(f"Error adding lecture: {e}")

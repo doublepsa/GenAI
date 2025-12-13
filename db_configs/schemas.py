@@ -1,6 +1,6 @@
 from mongoengine import Document, StringField, ListField, ReferenceField, DateTimeField
 from datetime import datetime
-from db_connection import MongoDBConnection
+from db_configs.db_connection import MongoDBConnection
 
 class User(Document):
     username = StringField(required=True, unique=True)
@@ -19,8 +19,7 @@ class Course(Document):
 # Lecture Schema
 # ----------------------
 class Lecture(Document):
-    title = StringField(required=True)
-    lecture_number = StringField(required=True)
+    lecture_number = StringField(required=True, unique_with='course')
     content = StringField()
     # LINK 1: The Lecture now explicitly belongs to a Course
     course = ReferenceField(Course, required=True)

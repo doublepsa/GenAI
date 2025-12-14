@@ -1,4 +1,4 @@
-from db_configs.schemas import User, Lecture, Course, Slide, Note
+from genai.db_configs.schemas import User, Lecture, Course, Slide, Note
 from mongoengine import NotUniqueError
 import os
 

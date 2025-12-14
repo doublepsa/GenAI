@@ -4,7 +4,9 @@ Version: 0.1.0
 Summary: Add your description here
 Requires-Python: >=3.13
 Description-Content-Type: text/markdown
+Requires-Dist: dotenv>=0.9.9
 Requires-Dist: gensim>=4.4.0
+Requires-Dist: mongoengine>=0.29.1
 Requires-Dist: nltk>=3.9.2
 Requires-Dist: pandas>=2.3.3
 Requires-Dist: pypdf[image]>=6.4.0
@@ -15,3 +17,18 @@ Requires-Dist: wget>=3.2
 
 # GenAI
 Project of the lecture 194.207 Generative AI (VU 4,0) 2025W
+
+# Installation
+After downloading the sourcecode with `git clone`
+
+Enter the created directory with `cd Genai`
+
+To download dependencies, run
+
+```
+uv build
+uv run pip install .
+```
+
+# Running the Project
+To start up the server locally, run `uv run streamlit run Home.py`

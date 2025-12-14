@@ -1,4 +1,6 @@
+dotenv>=0.9.9
 gensim>=4.4.0
+mongoengine>=0.29.1
 nltk>=3.9.2
 pandas>=2.3.3
 pypdf[image]>=6.4.0

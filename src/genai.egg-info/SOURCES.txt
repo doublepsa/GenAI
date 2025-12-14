@@ -9,3 +9,6 @@ src/genai.egg-info/SOURCES.txt
 src/genai.egg-info/dependency_links.txt
 src/genai.egg-info/requires.txt
 src/genai.egg-info/top_level.txt
+src/genai/db_configs/db_add.py
+src/genai/db_configs/db_connection.py
+src/genai/db_configs/schemas.py

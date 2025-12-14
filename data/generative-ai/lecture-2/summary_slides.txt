@@ -1,0 +1,71 @@
+**Introduction to Applied GenAI**
+The presentation aims to demystify the ecosystem of Generative AI by exploring its history, core concepts, and practical tools for programmatic interaction.
+
+**The DIKW Pyramid**
+This conceptual framework illustrates how raw data is transformed through context and understanding into information, knowledge, and ultimately wisdom.
+
+**History of Artificial Intelligence**
+AI research originated in the 1950s with the Dartmouth Workshop and has evolved through distinct eras, from early logic-based systems to the current deep learning revolution.
+
+**AI Hype Cycles**
+The development of AI has historically oscillated between periods of high expectations and "AI winters," characterized by disillusionment and stagnation in funding and research.
+
+**Symbolic vs. Subsymbolic AI**
+The field is divided into symbolic AI, which uses logic-based approaches for problem-solving, and subsymbolic AI, which utilizes data-driven approaches for pattern recognition.
+
+**Cognitive Architectures**
+Kahneman’s distinction between fast, instinctive "System 1" thinking and slow, logical "System 2" thinking provides a useful analogy for understanding different AI processing modes.
+
+**The Internet and Data**
+The invention of the World Wide Web and TCP/IP protocols created the massive connectivity and data generation—often described as the "new oil"—necessary to train modern models.
+
+**LLM Mechanics**
+Large Language Models are fundamentally trained for autoregression, functioning as sophisticated autocomplete engines that predict the next token in a sequence.
+
+**Frontier Model Providers**
+The current landscape is dominated by major organizations like OpenAI, Anthropic, Google, and Meta, who develop the most advanced "frontier" models pushing the boundaries of capability.
+
+**Model Openness Taxonomy**
+AI models are categorized by their level of transparency, ranging from fully closed proprietary systems to open-weight models and fully open-source projects that share training data and code.
+
+**Open Source Performance**
+Recent benchmarks indicate that open models capable of running on consumer hardware are rapidly closing the performance gap with proprietary frontier models.
+
+**Training Compute and Energy**
+The computational effort required to train state-of-the-art models has grown exponentially, leading to significant concerns regarding energy consumption and infrastructure demands.
+
+**Data Scarcity**
+Researchers project a potential bottleneck where the stock of high-quality human-generated public data may be fully utilized by the late 2020s.
+
+**Levels of AI Intelligence**
+The industry distinguishes between current narrow AI, human-level Artificial General Intelligence (AGI), and Artificial Superintelligence (ASI) which would surpass human capabilities across all domains.
+
+**The Scaling Hypothesis**
+This theory suggests that intelligence is an emergent property that arises naturally when simple neural units and learning algorithms are applied to massive datasets and compute resources.
+
+**The Bitter Lesson**
+Rich Sutton’s influential essay argues that general methods leveraging massive computation consistently outperform approaches that rely on human-encoded domain knowledge.
+
+**Deployment Strategies**
+Developers can choose to deploy LLMs through various tiers of infrastructure, ranging from managed AI-as-a-Service APIs to self-hosted bare-metal servers.
+
+**Programmatic Interaction**
+Interacting with LLMs involves sending HTTP requests via tools like cURL or utilizing programming languages, with Python serving as the backend standard and TypeScript for the frontend.
+
+**Development Frameworks**
+Libraries such as LangChain for application logic, LlamaIndex for data retrieval (RAG), and CrewAI for agent orchestration simplify the creation of complex AI applications.
+
+**AI Assisted Development**
+A new generation of tools including GitHub Copilot, Cursor, and Windsurf are transforming software engineering by acting as intelligent, AI-native pair programmers.
+
+**Low Code Platforms**
+Tools like Replit Agent and v0 allow users to generate web applications and user interfaces through natural language prompts, reducing the need for manual coding.
+
+**Model Discovery and Platforms**
+Hubs like Hugging Face serve as the central repository for open-source models, while aggregators like OpenRouter provide a unified API to access various proprietary and open models.
+
+**Local AI Execution**
+Tools such as Ollama enable developers to download and run powerful open-source large language models directly on local hardware without relying on cloud services.
+
+**Personal Knowledge Management**
+The presentation concludes by highlighting methodologies and tools like Obsidian and Notion that help individuals collect, connect, and synthesize information to enhance learning and productivity.

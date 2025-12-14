@@ -1,6 +1,6 @@
 import streamlit as st
-from db import get_available_lectures
-from llm import call_llm_api
+from genai.db import get_available_lectures
+from genai.llm import summarize_notes
 
 # Set up session state to initial values
 if 'result' not in st.session_state:
@@ -9,8 +9,9 @@ if 'result' not in st.session_state:
 
 def submit_notes():
     # Run when the note_submission form is submitted
-    # TODO: Start llm process. 'result' should give information on the process 
-    st.session_state.result="form successfully submitted!"
+    summary=summarize_notes(st.session_state.notes)
+    # TODO: send summary to db
+    st.session_state.result=summary
 
 st.title("Knowledge Gap Detector")
 

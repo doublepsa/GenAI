@@ -11,5 +11,6 @@ dependencies = [
     "pypdf[image]>=6.4.0",
     "scikit-learn>=1.7.2",
     "spacy>=3.8.11",
+    "streamlit>=1.52.1",
     "wget>=3.2",
 ]

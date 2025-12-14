@@ -20,6 +20,5 @@ If scores are exponentially scaled
 Pixj : =
 # Proximal Policy Optimization (PPO)
 Reward model calculates a record for the output.
-In reinforcement learning , gradient method can be applied to the action value function - or to the policy directly
-or both .
+In reinforcement learning , gradient method can be applied to the action value function - or to the policy directly or both .
 Policy-gradient methods maximize the performance. 

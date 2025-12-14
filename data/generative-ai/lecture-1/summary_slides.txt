@@ -1,0 +1,17 @@
+**Prompt Engineering** involves a collaborative effort between the user and the LLM to navigate a maze of possibilities by providing explicit context, constraints, and requests for reasoning to guide the output.
+
+**Symbolic vs. Subsymbolic AI** distinguishes between traditional AI that relies on explicit, human-readable rules and modern subsymbolic AI that leverages mathematical models to learn patterns directly from data.
+
+**Generative vs. Discriminative Models** contrasts models that learn decision boundaries to classify data ($P(Y|X)$) with models that learn the underlying joint probability or data distribution ($P(X)$) to generate new samples.
+
+**Tokenization** is the process of breaking down natural language sequences into atomic semantic units called tokens, which are subsequently mapped to numeric IDs for model processing.
+
+**Vector Embeddings** transform discrete token IDs into continuous, high-dimensional vector representations that capture semantic meaning and relationships, allowing concepts like "king" and "queen" to be related mathematically.
+
+**Image and Audio Processing** adapts sequence modeling to non-text modalities by treating image segments as pixel patches and audio as spectrograms, converting them into sequence-like structures.
+
+**Diffusion Models** generate data through a stochastic process that learns to reverse a gradual transformation, iteratively denoising a random distribution to reconstruct meaningful data like images.
+
+**Transformer Architecture** utilizes an encoder mechanism to create rich contextual vector representations of inputs and a decoder to autoregressively generate output sequences based on that context.
+
+**Positional Encoding** injects sequence order information into the embedding vectors using sine and cosine functions, enabling the permutation-invariant attention mechanism to understand the relative positions of tokens.

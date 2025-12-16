@@ -1,0 +1,5 @@
+# Ignore the whole folder of the virtual environment (venv)
+.venv/
+
+# Remove files from the environment that should not be tracked by git
+.env

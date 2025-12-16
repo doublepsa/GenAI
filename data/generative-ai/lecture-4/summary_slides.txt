@@ -1,0 +1,61 @@
+**Transformer Architecture Recap** The presentation begins by reviewing the fundamental components of the Transformer architecture, including encoder-decoder blocks, multi-head attention mechanisms, and feed-forward networks, as originally introduced in the "Attention Is All You Need" paper.
+
+**Model Architectures** Transformers are categorized into three distinct types: encoder-only models like BERT for understanding tasks, decoder-only models like GPT which dominate the current LLM landscape, and the original encoder-decoder structure used for translation.
+
+**Static vs. Learned Components** The slides distinguish between the static, non-learned structural operations of the architecture and the learned parameters (weights) that are updated during the training process.
+
+**Pre-training Phase** Pre-training is described as a self-supervised process where a model initializes with random weights and learns from massive datasets to become a "base model" capable of text completion, though it initially lacks instruction-following capabilities.
+
+**Next Token Prediction** For decoder-only models, the training data is prepared by shifting the input sequence by one position to create a target sequence, forcing the model to predict the next token based on the preceding context.
+
+**Probabilistic Learning Objective** The mathematical goal of generative modeling is defined as capturing the true distribution of language by maximizing the joint probability of a sequence, calculated as the product of conditional probabilities for each token.
+
+**Loss Function and Optimization** The model learns by minimizing a cross-entropy loss function, which calculates the negative log-likelihood of the correct token, using optimizers like SGD or AdamW to adjust weights based on calculated gradients.
+
+**Batching** To increase training efficiency, the presentation explains how multiple sequences are processed simultaneously in batches rather than individually.
+
+**Encoder-Only Training Objectives** Unlike generative models, encoder-only architectures like BERT are trained using Masked Token Prediction, where tokens are hidden or randomized, and Next Sentence Prediction to understand relationships between sentence pairs.
+
+**Transformer Advantages** The final section highlights that the Transformer's success stems from its ability to model long-range dependencies, its fully parallelizable training paradigm, and its versatility across different data types.
+
+**Personal Knowledge Management (PKM) Framework** The presentation proposes a mental model for knowledge work based on the DIKW pyramid, consisting of five distinct modes: Collect, Surface, Connect, Synthesize, and Reflect.
+
+**Accessing LLMs** Users can access large language models through various methods ranging from local execution using tools like Ollama and llama.cpp to API-based platforms like HuggingFace and OpenRouter.
+
+**LLM Adaptation Strategies** Pre-trained foundation models can be adapted to specific tasks through prompt engineering (in-context adaptation), retrieval-augmented generation (RAG) for adding knowledge, or fine-tuning for modifying behavior.
+
+**Mini AI Patterns** Developers can implement architectural patterns without frameworks, such as managing conversation state manually, parsing outputs into structured JSON, and chaining multiple processing steps together.
+
+**Transformation** LLMs facilitate the collection phase of knowledge management by converting content between different formats, such as turning unstructured text into structured data or meeting transcripts into action items.
+
+**Extraction** Through targeted prompting, systems can isolate and pull specific facts, claims, or data points from larger documents to enhance information collection.
+
+**Summarisation** Models support the reflect and collect modes by using extractive or abstractive methods to distill essential information from long-form content into concise versions.
+
+**Classification & Categorisation** Using few-shot learning or embedding comparisons, LLMs can automatically tag documents and assign them to predefined taxonomies to organize information efficiently.
+
+**Semantic Search** By converting text into vector embeddings, systems can improve information surfacing by finding conceptually related content based on meaning rather than exact keyword matches.
+
+**Retrieval Augmented Generation (RAG)** This technique allows models to respond to specific queries by retrieving relevant context from a private knowledge base and generating answers based on that evidence.
+
+**Connection Discovery** LLMs aid in the connect mode by extracting entities and classifying relationships to automatically build knowledge graphs that reveal non-obvious links between concepts.
+
+**Text Generation & Expansion** The autoregressive nature of language models allows users to elaborate on existing knowledge and generate new content with controlled creativity and coherence.
+
+**Knowledge Synthesis** Advanced prompting techniques like map-reduce allow systems to combine multiple perspectives or sources to create new, higher-level insights and consensus views.
+
+**Reasoning & Inference** Chain-of-thought prompting enables models to draw logical conclusions and identify implications or assumptions that are not explicitly stated in the source text.
+
+**Text Rewriting & Adaptation** Style transfer techniques allow models to paraphrase content and adjust its tone, complexity, or format to suit specific target audiences.
+
+**Translation** Multilingual models support cross-language knowledge management by translating content while preserving technical terminology and domain-specific nuances.
+
+**Code Generation & Analysis** Specialized models can generate functional code from natural language descriptions or explain the logic of existing software repositories.
+
+**Function Calling** LLMs can extend their capabilities beyond text generation by identifying user intent and interacting with external APIs and tools through structured data schemas.
+
+**Agentic Capabilities** Autonomous agents can iteratively plan, execute actions, and refine their strategies to achieve complex objectives without continuous human intervention.
+
+**Multi-modal Understanding** By aligning different modalities in a shared embedding space, models can process and connect information across text, images, audio, and video.
+
+**Perspective Engines** System prompts can instruct LLMs to adopt specific personas or viewpoints, allowing users to analyze data and strategies from different angles, such as engineering versus marketing.

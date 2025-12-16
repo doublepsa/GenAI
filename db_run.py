@@ -1,5 +1,5 @@
-from db_configs.db_connection import MongoDBConnection
-from db_configs.db_add import add_course, add_lecture, add_user, add_note
+from genai.db_configs.db_connection import MongoDBConnection
+from genai.db_configs.db_add import add_course, add_lecture, add_user, add_note
 
 # 1. Connect
 if not MongoDBConnection.setup():
@@ -25,3 +25,4 @@ if student and lec1:
         md_file_path="data/generative-ai/lecture-6/buraks-notes.md"  # <--- The script will read this file
     )
 
+    

@@ -1,6 +1,6 @@
 from mongoengine import Document, StringField, ListField, ReferenceField, DateTimeField
 from datetime import datetime
-from db_configs.db_connection import MongoDBConnection
+from genai.db_configs.db_connection import MongoDBConnection
 
 class User(Document):
     username = StringField(required=True, unique=True)

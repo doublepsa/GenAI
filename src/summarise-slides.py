@@ -61,7 +61,7 @@ def summarise_slides(base_data_path: str, lecture_number: Union[int, List[int]])
     return responses
 
 if __name__ == "__main__":
-    base_data_path = 'data\generative-ai'
+    base_data_path = 'data/generative-ai'
     lecture_number = list(range(1, 7))  # Lectures 1 to 6
     summaries = summarise_slides(base_data_path, lecture_number)
     for lec_num, summary in summaries:

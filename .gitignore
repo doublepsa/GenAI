@@ -3,3 +3,7 @@
 
 # Remove files from the environment that should not be tracked by git
 .env
+
+__pycache__/
+build/
+**.egg-info/

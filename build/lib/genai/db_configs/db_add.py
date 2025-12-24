@@ -15,11 +15,12 @@ def add_course(name: str) -> Course | None:
         print(f"Error adding course: {e}")
         return None
 
-def add_lecture(course_obj: Course, number: str) -> Lecture | None:
+def add_lecture(course_obj: Course, number: str, content: str = None) -> Lecture | None:
     try:
         # Create the lecture with the link to the course
         new_lecture = Lecture(
             lecture_number=number,
+            content=content,
             course=course_obj # <--- Link established here
         )
         new_lecture.save()
@@ -34,7 +35,7 @@ def add_lecture(course_obj: Course, number: str) -> Lecture | None:
         return None
 
 
-def add_slide(lecture_obj: Lecture, title: str, file_url: str, summary:str) -> Slide | None:
+def add_slide(lecture_obj: Lecture, title: str, file_url: str) -> Slide | None:
     try:
         new_slide = Slide(
             title=title, 
@@ -64,28 +65,36 @@ def add_user(username: str, email: str, roles: list = None) -> User | None:
         return None
 
 # --- 5. Add Note (Modified for Markdown Files) ---
-def add_note(user_obj, lecture_obj, md_file_path: str = None, content: str = None, summary: str = None):
-    # If content is passed directly (from Streamlit), use it
+def add_note(user_obj: User, lecture_obj: Lecture, title: str, md_file_path: str = None, content: str = None) -> Note | None:
+    """
+    Creates a Note document. 
+    Accepts EITHER raw string 'content' OR a 'md_file_path' to a local .md file.
+    """
     final_content = content
 
-    # Only look for a file path if content wasn't provided directly
-    if not final_content and md_file_path:
+    # Logic: If a file path is provided, read the markdown file
+    if md_file_path:
         if os.path.exists(md_file_path):
-            with open(md_file_path, "r", encoding="utf-8") as f:
-                final_content = f.read()
-    
-    if not final_content:
-        print("No content provided to save.")
-        return None
+            try:
+                with open(md_file_path, "r", encoding="utf-8") as f:
+                    final_content = f.read()
+                print(f"Read markdown content from: {md_file_path}")
+            except Exception as e:
+                print(f"Error reading file: {e}")
+                return None
+        else:
+            print(f"Error: File not found at {md_file_path}")
+            return None
 
     try:
         new_note = Note(
-            content=final_content,
+            title=title,
+            content=final_content, # Store final 
             author=user_obj,
-            lecture=lecture_obj,
-            summary=summary
+            lecture=lecture_obj
         )
         new_note.save()
+        print(f"Note '{title}' added successfully.")
         return new_note
     except Exception as e:
         print(f"Error saving note to DB: {e}")

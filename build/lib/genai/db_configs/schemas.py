@@ -3,7 +3,6 @@ from datetime import datetime
 from genai.db_configs.db_connection import MongoDBConnection
 
 class User(Document):
-    meta = {'collection': 'user'} # Explicitly match your DB collection name
     username = StringField(required=True, unique=True)
     email = StringField(required=True, unique=True)
     roles = ListField(StringField(), default=['user'])
@@ -11,35 +10,33 @@ class User(Document):
 # Course Schema
 # ----------------------
 class Course(Document):
-    meta = {'collection': 'course'}
     name = StringField(required=True, unique=True)
-    #lectures = ListField(ReferenceField('Lecture'))  # connection to lectures
+    description = StringField()
+    lectures = ListField(ReferenceField('Lecture'))  # connection to lectures
+
 
 # ----------------------
 # Lecture Schema
 # ----------------------
 class Lecture(Document):
-    meta = {'collection': 'lecture'}
     lecture_number = StringField(required=True, unique_with='course')
+    content = StringField()
     # LINK 1: The Lecture now explicitly belongs to a Course
     course = ReferenceField(Course, required=True)
 
 class Slide(Document):
-    meta = {'collection': 'slide'}
     title = StringField(required=True)
     file_url = StringField(required=True)
     # LINK 2: The Slide now belongs to a specific Lecture
     lecture = ReferenceField(Lecture, required=True)
-    summary=StringField()
 
 # ----------------------
 # Note Schema
 # ----------------------
 class Note(Document):
-    meta = {'collection': 'note'}
+    title = StringField(required=True)
     content = StringField()
     file_url = StringField()
     # LINK 3: The Note belongs to a User AND a Lecture
     author = ReferenceField(User, required=True)
     lecture = ReferenceField(Lecture, required=True)
-    summary = StringField()

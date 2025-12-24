@@ -1,0 +1,12 @@
+dotenv>=0.9.9
+gensim>=4.4.0
+google-genai>=1.55.0
+mongoengine>=0.29.1
+nltk>=3.9.2
+pandas>=2.3.3
+pathlib>=1.0.1
+pypdf[image]>=6.4.0
+scikit-learn>=1.7.2
+spacy>=3.8.11
+streamlit>=1.52.1
+wget>=3.2

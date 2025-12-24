@@ -10,8 +10,7 @@ student = add_user("johnny_coder", "john@coder.com")
 
 
 # 2. Retrieve (or Create) the User and Lecture you want to link
-# (Assuming these already exist from previous runs, otherwise create them)
-course = add_course("GenAI WS25")
+course = "GenAI WS25"
 lec1 = add_lecture(course, "Intro to LLMs", "1")
 student = add_user("jane_doe", "jane@uni.edu")
 

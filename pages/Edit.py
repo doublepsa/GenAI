@@ -1,32 +1,65 @@
 import streamlit as st
-from genai import db
+from src.genai.db_configs.db_connection import MongoDBConnection
+from src.genai.db_configs.schemas import Course
+from src.genai.llm import summarize_pdf
 
-# Set up initial session state
-if 'result' not in st.session_state:
-    st.session_state.result=''
+# 1. Local function to fetch course names from DB
+@st.cache_data(ttl=3600)
+def get_course_names():
+    """Initializes connection and fetches unique course names from DB."""
+    # Use your class method to connect
+    if not MongoDBConnection.setup():
+        st.error("Could not connect to database.")
+        return []
 
+    try:
+        # Use MongoEngine to get distinct values from the 'name' field
+        courses = Course.objects.distinct('name')
+        return sorted(courses)
+    except Exception as e:
+        st.error(f"Error fetching courses: {e}")
+        return []
 
-def submit_slides():
-    # Function run when the lecture_submission form is submitted
-    # If the lecture has already been created, overrights the lecture with a new one
-    # Otherwise, creates a new lecture
-    # TODO: connect to db
-    if st.session_state.lecture in db.get_available_lectures():
-        #db.modify_lecture(st.session_state.lecture,st.session_state.slides)
-        st.session_state.result="editing existing state!"
+st.set_page_config(page_title="Edit Lecture", layout="centered")
+
+st.title("📚 Lecture Summarizer")
+
+# 2. Populate Dropdown
+course_options = get_course_names()
+
+ui_options = course_options + ["+ Add New Course..."]
+
+col1, col2 = st.columns([3, 1])
+
+with col1:
+    selected_course = st.selectbox("Select Course", options=ui_options)
+    
+    # If user picks the special option, show a text box
+    if selected_course == "+ Add New Course...":
+        course_name = st.text_input("Enter New Course Name", placeholder="e.g., AI Ethics 101")
     else:
-        #db.add_lecture(st.session_state.lecture,st.session_state.slides)
-        st.session_state.result="creating new lecture!"
-    
-    
+        course_name = selected_course
 
-st.subheader("Edit Lectures")
-st.write("Use this page to edit/add new lectures to the app")
-with st.form("lecture_submission"):
-    # Form for submitting new lectures and updating old ones
-    # Should only be able to be accessed by priviliged users
-    st.selectbox("Select an existing Lecture or create a new one", db.get_available_lectures(), key="lecture",accept_new_options=True)
-    st.file_uploader("(Re)Upload this lecture's slides",key="slides")
-    st.form_submit_button("Submit Slides",on_click=submit_slides)
+with col2:
+    lecture_num = st.number_input("Lecture #", min_value=1, step=1)
 
-st.write(st.session_state.result)
+    # 3. File Upload
+    uploaded_pdf = st.file_uploader("Upload Lecture Slides (PDF)", type=["pdf"])
+
+    if st.button("🚀 Process & Summarize", type="primary", use_container_width=True):
+        if uploaded_pdf:
+            with st.spinner(f"Analyzing {selected_course} Lec {lecture_num}..."):
+                try:
+                    pdf_bytes = uploaded_pdf.read()
+                    
+                    # Call llm.py function
+                    summary = summarize_pdf(pdf_bytes, selected_course, lecture_num)
+                    
+                    st.subheader("Final Summary")
+                    st.markdown(summary)
+                    st.success("Summary generated and saved to database!")
+                    
+                except Exception as e:
+                    st.error(f"An error occurred during processing: {e}")
+        else:
+            st.warning("Please upload a PDF file first.")

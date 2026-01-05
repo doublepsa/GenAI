@@ -1,7 +1,7 @@
 import streamlit as st
-from genai.db_configs.db_connection import MongoDBConnection
-from genai.db_configs.schemas import Course
-from genai.llm import summarize_pdf
+from src.genai.db_configs.db_connection import MongoDBConnection
+from src.genai.db_configs.schemas import Course
+from src.genai.llm import summarize_pdf
 
 # 1. Local function to fetch course names from DB
 @st.cache_data(ttl=3600)

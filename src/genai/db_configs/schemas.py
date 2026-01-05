@@ -41,5 +41,5 @@ class Note(Document):
     file_url = StringField()
     # LINK 3: The Note belongs to a User AND a Lecture
     author = ReferenceField(User, required=True)
-    lecture = ReferenceField(Lecture, required=True,unique=True)
+    lecture = ReferenceField(Lecture, required=True,unique_with='author')
     summary = StringField()

@@ -29,7 +29,7 @@ class Slide(Document):
     title = StringField(required=True)
     file_url = StringField(required=True)
     # LINK 2: The Slide now belongs to a specific Lecture
-    lecture = ReferenceField(Lecture, required=True)
+    lecture = ReferenceField(Lecture, required=True, unique=True)
     summary=StringField()
 
 # ----------------------
@@ -41,5 +41,5 @@ class Note(Document):
     file_url = StringField()
     # LINK 3: The Note belongs to a User AND a Lecture
     author = ReferenceField(User, required=True)
-    lecture = ReferenceField(Lecture, required=True)
+    lecture = ReferenceField(Lecture, required=True,unique=True)
     summary = StringField()

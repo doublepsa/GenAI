@@ -100,3 +100,54 @@ def summarize_notes(notes_text, course_name, lec_num, username):
     ).save()
 
     return summary_text
+
+def compare_notes(summary,course_name,lecture_num):
+    if not MongoDBConnection.setup():
+        return "Database connection failed."
+    course_obj = Course.objects(name=course_name).first()
+    lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
+    slide_obj = Slide.objects(lecture=lecture_obj).first()
+    
+    prompt=f"""# ROLE:
+You are an expert study assistant.
+
+# INPUT FORMAT:
+you will be given two texts, written in markdown.
+
+The first text is a summary of a lecture condensed so that each new idea that is important for studying consists of a single sentence.
+
+The second text is set of student-written notes taken from the lecture.
+
+# TASK:
+Your task is to compare the lecture summary with the student notes. 
+
+Identify every contradiction between the two texts. Each instance of contradiction indicates a piece of information the student took incorrectly. List all such errors.
+
+Identify every topic in the lecture that is missing in the student notes. Each instance of missing information is a knowledge gap in the student notes. List all such gaps in the student's work.
+
+# IMPORTANT CONSIDERATIONS:
+1. The lecture summary is ALWAYS completely correct. Every error is located in the student notes
+2. Contradictions only occur when semantic information differs between the two texts. The student is allowed to rename variables, paraphrase, and otherwise change the text without causing contradiction.
+3. Likewise, knowledge gaps only occur when semantic information is missing. The student is allowed to abbreviate topics as long as understanding of the topic is shown.
+4. although the lecture summary is always correct, it is not necessarily complete. If the student notes contain something not in the lecture summary, as long as it is not contradictory, do not put it in the errors. 
+
+# OUTPUT FORMAT:
+You will output a region of markdown text consisting of two top-level headers "ERRORS" and "GAPS". As numbered lists, add your list of identified contradictions under ERRORS and your list of knowledge gaps under GAPS. The student is the user, so refer to them in the second person.
+
+After your response the user may ask follow up questions about your output. Respond to these questions as normal for a study assistant chatbot.
+
+# LECTURE SUMMARY:
+{slide_obj.summary}
+
+# STUDENT NOTES:
+{summary}
+
+# RESPONSE:
+"""
+    response = client.models.generate_content(
+        model="gemini-3-pro-preview",
+        contents=[
+            prompt
+        ],
+    )
+    return response.text

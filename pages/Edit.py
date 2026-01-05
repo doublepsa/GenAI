@@ -1,7 +1,7 @@
 import streamlit as st
-from src.genai.db_configs.db_connection import MongoDBConnection
-from src.genai.db_configs.schemas import Course
-from src.genai.llm import summarize_pdf
+from genai.db_configs.db_connection import MongoDBConnection
+from genai.db_configs.schemas import Course
+from genai.llm import summarize_pdf
 
 # 1. Local function to fetch course names from DB
 @st.cache_data(ttl=3600)
@@ -20,6 +20,16 @@ def get_course_names():
         st.error(f"Error fetching courses: {e}")
         return []
 
+def logout():
+    st.session_state.user=None
+    st.switch_page("Home.py")
+
+# Sidebar navigation
+st.sidebar.write(f"Current User: {st.session_state.user}")
+st.sidebar.button("logout",on_click=logout)
+st.sidebar.markdown("**Navigation:**")
+st.sidebar.page_link('Home.py', label='Home')
+st.sidebar.page_link('pages/Edit.py', label='Edit')
 st.set_page_config(page_title="Edit Lecture", layout="centered")
 
 st.title("📚 Lecture Summarizer")
@@ -53,8 +63,8 @@ with col2:
                     pdf_bytes = uploaded_pdf.read()
                     
                     # Call llm.py function
-                    summary = summarize_pdf(pdf_bytes, selected_course, lecture_num)
-                    
+                    summary = summarize_pdf(pdf_bytes, course_name, lecture_num)
+                    get_course_names.clear()
                     st.subheader("Final Summary")
                     st.markdown(summary)
                     st.success("Summary generated and saved to database!")

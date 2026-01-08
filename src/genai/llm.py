@@ -38,9 +38,54 @@ def summarize_pdf(pdf_bytes, course_name, lec_num):
         lecture_obj = Lecture(course=course_obj, lecture_number=str(lec_num)).save()
 
     '''
+    #Old Promt
+    #prompt = """Summarise the attached slides into one sentence per topic. 
+    #Topic titles in **bold**, no bullet points, no intro/outro."""
     # 3. LLM Processing
-    prompt = """Summarise the attached slides into one sentence per topic. 
-    Topic titles in **bold**, no bullet points, no intro/outro."""
+    prompt = """
+    # ROLE
+    You are a document analysis assistant whose task is to faithfully extract and reorganize information from university lecture slides.
+
+    # SOURCE OF TRUTH
+    The attached PDF lecture slides are the ONLY source of information.
+    Do NOT add, infer, generalize, or assume anything beyond what is explicitly stated on the slides.
+
+    # TASK
+    Create a detailed, structured study summary of the lecture slides.
+
+    You must:
+    1. Preserve the logical structure of the slides, including sections and subtopics.
+    2. Extract all important examinable information, including:
+    - Definitions
+    - Key concepts
+    - Relationships between concepts
+    - Algorithms or step-by-step procedures
+    - Mathematical expressions or formulas (rewrite exactly as shown, using LaTeX if needed)
+    - Assumptions, constraints, and conditions
+    3. Rephrase the slide content only to improve clarity and readability, without changing meaning.
+    4. Include information conveyed by figures, diagrams, tables, or graphs **only if the slide explicitly explains them** (e.g., captions or accompanying text).
+
+    # STRICT RULES (NO HALLUCINATION)
+    - Do NOT introduce examples, explanations, or background knowledge not present in the slides.
+    - Do NOT merge topics unless they are presented together on the same slide or under the same slide heading.
+    - If information is ambiguous or incomplete on the slide, preserve it as-is without completing it.
+
+    # OUTPUT FORMAT
+    - Use **bold** section headers that correspond to slide titles or major headings.
+    - Under each header, write multiple complete sentences that cover all bullet points from the slides.
+    - Do NOT use bullet points or numbered lists.
+    - Do NOT add introductions, conclusions, or commentary.
+
+    # QUALITY TARGET
+    The summary should be detailed enough that a student who studied only this output would not lose any examinable information compared to the original slides.
+
+    # LECTURE SLIDES:
+    (See attached PDF)
+
+    # RESPONSE:
+    """
+
+    
     try:
         response = client.models.generate_content(
             model=model,

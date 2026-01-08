@@ -49,6 +49,8 @@ with col1:
         course_name = st.text_input("Enter New Course Name", placeholder="e.g., AI Ethics 101")
     else:
         course_name = selected_course
+    # Placeholder for the summary
+    summary_placeholder = st.empty()
 
 with col2:
     lecture_num = st.number_input("Lecture #", min_value=1, step=1)
@@ -65,8 +67,11 @@ with col2:
                     # Call llm.py function
                     summary = summarize_pdf(pdf_bytes, course_name, lecture_num)
                     get_course_names.clear()
-                    st.subheader("Final Summary")
-                    st.markdown(summary)
+                    # Update the placeholder in col1
+                    summary_placeholder.subheader("Final Summary")
+                    summary_placeholder.markdown(summary)
+                    #st.subheader("Final Summary")
+                    #st.markdown(summary)
                     st.success("Summary generated and saved to database!")
                     
                 except Exception as e:

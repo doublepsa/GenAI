@@ -1,6 +1,7 @@
 # GenAI
 Project of the lecture 194.207 Generative AI (VU 4,0) 2025W
 
+
 # Installation
 After downloading the sourcecode with `git clone`
 
@@ -13,8 +14,6 @@ uv build
 uv run pip install .
 ```
 
-# Running the Project
-To start up the server locally, run `uv run streamlit run Home.py`
 
 # Gemini API Key
 
@@ -34,3 +33,52 @@ In order to run the project, one needs a Gemini API Key. It is possible to get i
 
 4. Create a file .env in the root folder of the project.
     - Include `GEMINI_API_KEY = <YOUR_KEY>`
+-- OR --
+4. add your Gemini API key to your environment by executing `export GEMINI_API_KEY=<YOUR_KEY>` in a terminal emulator
+
+
+# MongoDB
+
+This project relies on a local mongodb database. Download mongodb and mongosh through your favorite package manager.
+
+Ensure a storage directory exists for the database and for its logs
+```
+sudo mkdir -p /var/lib/mongodb
+sudo chown -R mongodb:mongodb /var/lib/mongodb
+
+sudo mkdir -p /var/log/mongodb
+sudo chown -R mongodb:mongodb /var/log/mongodb
+```
+
+Next, create a configuration file at `/etc/mongodb.conf` and add the following:
+
+```
+# mongod.conf
+
+# for documentation of all options, see:
+#   http://docs.mongodb.org/manual/reference/configuration-options/
+
+# Where and how to store data.
+storage:
+  dbPath: /var/lib/mongodb
+
+# where to write logging data.
+systemLog:
+  destination: file
+  logAppend: true
+  path: /var/log/mongodb/mongod.log
+
+# network interfaces
+net:
+  port: 27017
+  bindIp: 127.0.0.1
+```
+
+Finally, enable the mongodb service with `sudo systemctl enable --now mongodb`
+
+You can check that it is running without errors with `systemctl status mongodb`
+
+or by running `mongosh`, if this command doesn't immediately return an error, mongodb is running. Use `exit` to exit the mongo shell.
+
+# Running the Project
+To start up the server locally, run `uv run streamlit run Home.py`

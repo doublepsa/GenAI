@@ -4,6 +4,7 @@ from google import genai
 from google.genai import types
 from src.genai.db_configs.schemas import Course, Lecture, Slide, Note, User
 from src.genai.db_configs.db_connection import MongoDBConnection
+import warnings
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 model="gemini-3-pro-preview"
@@ -161,7 +162,7 @@ you will be given two texts, written in markdown.
 
 The first text is a summary of a lecture condensed so that each new idea that is important for studying consists of a single sentence.
 
-The second text is set of student-written notes taken from the lecture.
+The second text is a set of student-written notes taken from the lecture.
 
 # TASK:
 Your task is to compare the lecture summary with the student notes. 

@@ -2,7 +2,7 @@ import streamlit as st
 from src.genai.llm import summarize_notes,compare_notes,student_notes_comparison
 from src.genai.db_configs.db_add import add_note
 from src.genai.db_configs.db_connection import MongoDBConnection
-from src.genai.db_configs.schemas import Lecture,Course,User
+from src.genai.db_configs.schemas import Lecture,Course,User,Note
 
 # Ensure mongodb connection is activated
 if not MongoDBConnection.setup():
@@ -31,7 +31,7 @@ def get_available_lectures(course_name):
         return []
 
 # Switch to main page if no user is logged in
-if "user "not in st.session_state or st.session_state.user==None:
+if "user" not in st.session_state or st.session_state.user==None:
     st.switch_page("Home.py")
 
 # Sidebar navigation
@@ -58,10 +58,22 @@ lecture_num=lectures[lecture_name]
 # Form Submit
 if st.button('Run the LLM',type="primary"): 
     try:
-        # compares the user's notes with every other student note
-        comparison=student_notes_comparison(course_name,lecture_num,st.session_state.user)
+        # compares the user's notes with the lecture summary
+        user=User.objects(username=st.session_state.user).first()
+        student_note=Note.objects(author=user).first().content
+        note_comparison = compare_notes(student_note, course_name,lecture_num)
     except Exception as e:
         raise e
-    if comparison:
+    if note_comparison:
         # Display result
-        st.markdown(comparison)
+        st.markdown("# Comparison against the lecture")
+        st.markdown(note_comparison)
+    try:
+        # compares the user's notes with every other student note
+        student_comparison=student_notes_comparison(course_name,lecture_num,st.session_state.user)
+    except Exception as e:
+        raise e
+    if student_comparison:
+        # Display result
+        st.markdown("# Comparison against other students")
+        st.markdown(student_comparison)

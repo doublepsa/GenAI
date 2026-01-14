@@ -194,7 +194,7 @@ Identify every topic in the lecture that is missing in the student notes. Each i
 4. although the lecture summary is always correct, it is not necessarily complete. If the student notes contain something not in the lecture summary, as long as it is not contradictory, do not put it in the errors. 
 
 # OUTPUT FORMAT:
-You will output a region of markdown text consisting of two top-level headers "ERRORS" and "GAPS". As numbered lists, add your list of identified contradictions under ERRORS and your list of knowledge gaps under GAPS. The student is the user, so refer to them in the second person.
+You will output a region of markdown text consisting of two level-two (##) headers "Errors" and "Gaps". As numbered lists, add your list of identified contradictions under ERRORS and your list of knowledge gaps under GAPS. The student is the user, so refer to them in the second person.
 
 After your response the user may ask follow up questions about your output. Respond to these questions as normal for a study assistant chatbot.
 
@@ -264,7 +264,7 @@ Suggest what might be missing, but do not comment about amending the notes.
 3. Do not refer to the summaries as such in the output. Instead, compare the user's notes to "the rest of the class", "other students", and similar labels.
 
 # OUTPUT FORMAT:
-You will output a region of markdown text with one header, labeled "Gaps". As a numbered list, add the detected deficiencies below the header.
+You will output a region of markdown text with one level-two (##) header, labeled "Gaps". As a numbered list, add the detected deficiencies below the header.
 
 STUDENT NOTES:
 {this_note}

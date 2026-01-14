@@ -1,22 +1,13 @@
 
 # Lecture 5: GPT
 
-
-<a id="org635d106"></a>
-
 ## Generative Pretrained Transformer
 
 As an example, this is the training regime of InstructGPT (precursor to chatGPT):
 
-
-<a id="org2d4458b"></a>
-
 ### 1. Train initial model with supervised learning with demonstration data
 
 given input, shown desired output
-
-
-<a id="org5714b41"></a>
 
 ### 2. Train seperate reward model using labelers
 
@@ -28,9 +19,6 @@ Labelers had a set of criteria to judge the output
 -   hallucination
 -   contains inadmissable content
 -   etc.
-
-
-<a id="org19f3a3f"></a>
 
 ### 3. Improve initial model with reinforcement learning using reward model
 

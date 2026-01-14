@@ -1,13 +1,7 @@
 
 # Lecture 6: GPT II
 
-
-<a id="org2be6a9f"></a>
-
 ## How to convert rankings to reward
-
-
-<a id="org436421c"></a>
 
 ### Direct Assignment of Reward
 
@@ -15,9 +9,6 @@ ranking of multiple responses are converted to numerical rewards
 Simplest method is fixed reword for order, like +1,0,-1
 Another approach is normalized rewards, 0-1
 A third approach is to use nonlinear scaling such as logarithmic or exponential. -ln(a) or e<sup>-&lambda; a</sup>
-
-
-<a id="org739fbf0"></a>
 
 ### Supervised Learning
 
@@ -35,9 +26,6 @@ we want to maximize probability P(y1>y2) = exp r<sub>&theta;</sub>(x,y1) / (exp 
 or argmax(&sigma;(r<sub>&theta;</sub>(x,y1)-r<sub>&theta;</sub>(x,y2)))
 optimize this with supervised learning
 
-
-<a id="orgf86eb59"></a>
-
 ## Proximal Policy Optimization
 
 Actor-critic method (Policy-gradient for us)
@@ -46,9 +34,6 @@ where At(s,a) is Qt(s,a) - Vt(s,a)
 J=E[v(S0)|S0~t] where S0 is starting state, v is sum of reward
 Then gradient is L&Sigma;&mu;&Sigma; q \* gradient &pi;
 &theta;=&theta;+&alpha;&Sigma; q gradient &pi; where q is an approximation of the action-value function
-
-
-<a id="org8bc5db6"></a>
 
 ### REINFORCE
 
@@ -60,9 +45,6 @@ we can add a baseline b(S<sub>t</sub>) (because it will is always equal to 0 whe
 the best baseline is the state-value function v, because then we get the advantage, so how much better the new action is from before
 &theta;<sub>t+1</sub>=&theta;<sub>t</sub>+&alpha;&gamma;<sup>t</sup> (G<sub>t</sub>-b(S<sub>t</sub>)) gradient ln &pi;<sub>&theta;</sub>(A<sub>t</sub>|S<sub>t</sub>,&theta;<sub>t</sub>)
 this is the actor critic model, pi is the actor, the advantage function is the critic - judging the action
-
-
-<a id="orgde9e7d9"></a>
 
 ### TRPO
 
@@ -80,9 +62,6 @@ if divergence d < target / 1.5, &beta; is halved, if d > target \* 1.5, &beta; i
    hyperparameters are chosen heuristically
 KLPENALTY works worse than CLIP
 
-
-<a id="org994f998"></a>
-
 ### PPO
 
 J = expected value of JCLIP - c1 JVF + c2 S(&pi;<sub>&theta;</sub>)(s<sub>t</sub>) where c1,c2 are nonnegative coefficients
@@ -90,9 +69,6 @@ JVF is squared-error loss - makes it an actor-critic model (V<sub>&theta;</sub>(
 S is entropy - added as reward in order to ensure sufficient exploration of states (optimization is stochastic, so there is uncertainty)
 A = &delta;<sub>t</sub> + (&gamma;&lambda;)&delta;<sub>t+1</sub>+(&gamma;&lambda;)<sup>2</sup>&delta;<sub>t+2</sub> + &#x2026;
 &delta;=r+&gamma;\*V(s+1)-V(s)
-
-
-<a id="orgbec48cb"></a>
 
 ### Group Relative Policy Optimization
 

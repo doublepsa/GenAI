@@ -3,7 +3,6 @@ from src.genai.db_configs.db_connection import MongoDBConnection
 from src.genai.db_configs.schemas import Course
 from src.genai.llm import summarize_pdf
 
-# 1. Local function to fetch course names from DB
 @st.cache_data(ttl=3600)
 def get_course_names():
     """Initializes connection and fetches unique course names from DB."""
@@ -20,13 +19,16 @@ def get_course_names():
         st.error(f"Error fetching courses: {e}")
         return []
 
-def logout():
-    st.session_state.user=None
+
+# Switch to main page if no user is logged in
+if "user "not in st.session_state or st.session_state.user==None:
     st.switch_page("Home.py")
 
 # Sidebar navigation
 st.sidebar.write(f"Current User: {st.session_state.user}")
-st.sidebar.button("logout",on_click=logout)
+if st.sidebar.button("logout"):
+    st.session_state.user=None
+    st.switch_page("Home.py")
 st.sidebar.markdown("**Navigation:**")
 st.sidebar.page_link('Home.py', label='Home')
 st.sidebar.page_link('pages/Edit.py', label='Edit')
@@ -45,7 +47,7 @@ col1, col2 = st.columns([3, 1])
 with col1:
     selected_course = st.selectbox("Select Course", options=ui_options)
     
-    # If user picks the special option, show a text box
+    # If user picks the add course option, show a text box for choosing the name
     if selected_course == "+ Add New Course...":
         course_name = st.text_input("Enter New Course Name", placeholder="e.g., AI Ethics 101")
     else:
@@ -71,8 +73,6 @@ with col2:
                     # Update the placeholder in col1
                     summary_placeholder.subheader("Final Summary")
                     summary_placeholder.markdown(summary)
-                    #st.subheader("Final Summary")
-                    #st.markdown(summary)
                     st.success("Summary generated and saved to database!")
                     
                 except Exception as e:

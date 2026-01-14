@@ -215,18 +215,15 @@ After your response the user may ask follow up questions about your output. Resp
     return response.text
 
 def student_notes_comparison(course_name, lecture_number, username):
-    
     """
     Uses Gemini to compare a specific student notes file with all the others for the same lecture.
-
-    Args:
-        base_data_path: The root directory for the data (e.g., 'data/').
-        lecture_number: The specific lecture number to analyze (e.g., 1 for 'lecture-1').
-        student_notes: The specific student notes to compare (e.g., 'tylers-notes.md').
     """
 
+    # Ensure connection to db
     if not MongoDBConnection.setup():
         return "Database connection failed."
+    
+    # Fetch all necessary objects from database
     course_obj = Course.objects(name=course_name).first()
     lecture_obj = Lecture.objects(course=course_obj,lecture_number=str(lecture_number)).first()
     user_obj = User.objects(username=username).first()
@@ -234,6 +231,7 @@ def student_notes_comparison(course_name, lecture_number, username):
     this_note = Note.objects(lecture=lecture_obj,author=user_obj).first()
 
 
+    # Ensure objects are fetched
     if len(student_notes) < 1:
         raise Exception(f"Not enough student notes for lecture-{lecture_number} to perform comparison.", UserWarning)
         return ""
@@ -244,6 +242,7 @@ def student_notes_comparison(course_name, lecture_number, username):
     other_notes=[]
     for note in student_notes:
         other_notes.append(note.summary)
+
     prompt=f"""# ROLE:
 You are an expert study assistant.
 
@@ -280,5 +279,5 @@ OUTPUT:
         contents=[prompt],
     )
 
-    # save student notes comparison to a text file
+    # return the response from gemini
     return response.text

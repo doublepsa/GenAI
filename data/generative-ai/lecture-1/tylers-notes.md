@@ -1,8 +1,5 @@
 # Lecture 1: Introduction to GenAI
 
-
-<a id="org126c077"></a>
-
 ## Quick prompting tips
 
 1.  Ask the llm to explain
@@ -11,13 +8,7 @@
     llm knows nothing - need to tell it
     add mental model/persective/assumptions
 
-
-<a id="orgc97bc86"></a>
-
 ## What is GenAI
-
-
-<a id="org6cfe234"></a>
 
 ### Symbolic AI
 
@@ -27,9 +18,6 @@ Logical models
 -   Expert Systems
 -   Search
 -   knowledge representation
-
-
-<a id="org5a698d3"></a>
 
 ### Subsymbolic AI
 
@@ -80,15 +68,9 @@ Is provided data, and uses math to define actions over the data
             Create normal distribution that centers around \sqrt{1-\beta_t}x\_t with variance &beta;<sub>t</sub>I
             can directly sample from x\_0 to any timestep t
 
-
-<a id="org9e8b2b7"></a>
-
 ## The Transformer Architecture
 
 [The Transformer Architecture, Cont.](#orga6ffd6e)
-
-
-<a id="org4e0f7bb"></a>
 
 ### Encoder
 
@@ -96,21 +78,12 @@ Captures semantic meaning of sequence
 can be used without a decoder to classify
 Input, many encoder blocks, outputs embedding
 
-
-<a id="orgc7a7928"></a>
-
 ### Decoder
 
 Predicts next token
 Can be used without an encoder autoregressively to generate
 Input from Encoder, many decoder blocks, output probabilities
 
-
-<a id="orgb645ef1"></a>
-
 ### Positional Encoding
 
 Use sin/cos to to give a number to each position, give each embedding a unique number for each position
-
-
-<a id="org23f4d28"></a>

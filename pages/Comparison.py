@@ -4,6 +4,7 @@ from src.genai.db_configs.db_add import add_note
 from src.genai.db_configs.db_connection import MongoDBConnection
 from src.genai.db_configs.schemas import Lecture,Course,User
 
+# Ensure mongodb connection is activated
 if not MongoDBConnection.setup():
     st.error("Could not connect to database.")
     st.stop()
@@ -17,9 +18,9 @@ def get_course_names():
     except Exception as e:
         st.error(f"Error fetching courses: {e}")
         return []
-# @st.cache_data(ttl=3600)
+    
 def get_available_lectures(course_name):
-    """Fetches all lectures from DB"""
+    """Fetches all lectures from DB for course course_name. Returns a dictionary whose keys are the course name + lecture number, and values are just the number"""
     try:
         course=Course.objects(name=course_name).first()
         lectures=Lecture.objects(course=course)
@@ -29,17 +30,22 @@ def get_available_lectures(course_name):
         st.error(str(e))
         return []
 
+# Switch to main page if no user is logged in
+if "user "not in st.session_state or st.session_state.user==None:
+    st.switch_page("Home.py")
+
 # Sidebar navigation
 st.sidebar.write(f"Current User: {st.session_state.user}")
 if st.sidebar.button("logout"):
     st.session_state.user=None
-    st.rerun()
+    st.switch_page("Home.py")
 st.sidebar.markdown("**Navigation:**")
 st.sidebar.page_link('Home.py', label='Home')
 st.sidebar.page_link('pages/Edit.py', label='Edit')
 st.sidebar.page_link('pages/Comparison.py', label='Comparison')
-st.title("Note Comparer")
 
+
+st.title("Note Comparer")
 st.write("Use this page to compare your already submitted notes with other students and the lecture slides")
 
 courses=get_course_names()
@@ -52,13 +58,10 @@ lecture_num=lectures[lecture_name]
 # Form Submit
 if st.button('Run the LLM',type="primary"): 
     try:
+        # compares the user's notes with every other student note
         comparison=student_notes_comparison(course_name,lecture_num,st.session_state.user)
     except Exception as e:
         raise e
     if comparison:
         # Display result
         st.markdown(comparison)
-    # if summary:
-        # comparision = compare_notes(summary, course_name,lecture_num)
-        # Display result
-        # st.markdown(comparison)

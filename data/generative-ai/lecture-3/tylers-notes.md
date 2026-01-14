@@ -1,16 +1,10 @@
 
 # Lecture 3: Transformers
 
-
-<a id="orga6ffd6e"></a>
-
 ## The Transformer Architecture, Cont.
 
 [The Transformer Architecture](#org9e8b2b7)
 token->id->embedding->positional encoding
-
-
-<a id="org2752201"></a>
 
 ### The attention mechanism
 
@@ -57,9 +51,6 @@ softmax(alignment/sqrt(d<sub>k</sub>)V = attention
     combine source language with target language in one shared space
     How well does the query of the decoder align with the key,value of the encoder, (softmax) then times value of the source
 
-
-<a id="org4a61d69"></a>
-
 ### Add and Norm
 
 normalization across embedding space
@@ -71,9 +62,6 @@ This is where mixture of expert magic happens
 
     mini MultiLayer Perceptron
     linear+ReLU+Linear
-
-
-<a id="orgbe0c64a"></a>
 
 ### Linear+Softmax output
 

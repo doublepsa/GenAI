@@ -6,13 +6,7 @@ pre-train to get base model
 post-train to get final model
 then training is done, and you can start inference
 
-
-<a id="orge5b0a3c"></a>
-
 ## Decoder-only models
-
-
-<a id="org2889a12"></a>
 
 ### Pretraining
 
@@ -35,15 +29,9 @@ but has no external values
 
     Push multiple sequences to the model at once (list of matrices, or tensor)
 
-
-<a id="org0044fff"></a>
-
 ### Posttraining
 
 Supervided finetuning, preference finetuning, reinforcement learning with verifiable results
-
-
-<a id="org8332ed6"></a>
 
 ## Encoder-only models
 
@@ -51,9 +39,6 @@ Act of training (optimizer) stays the same, but input and out are different
 Input is still token sequence (with special tokens)
 Gets turned into embeddings
 But has more layers, token, segment and positional embeddings (all learned)
-
-
-<a id="orgc38a5cb"></a>
 
 ### Masked Token Prediction
 
@@ -63,16 +48,10 @@ Instead of predicting next token, mask a random token from sequence, and predict
 10% unchanged
 This avoids putting emphasis on a special token and does not bias the model to the specific task
 
-
-<a id="orgfad8606"></a>
-
 ### Next sentence prediction
 
 binary classifier, does one sentence come after the next
 Splits the sentences by a special [SEP] token
-
-
-<a id="orgb5f7275"></a>
 
 ### There are many more types of training
 
@@ -80,9 +59,6 @@ Splits the sentences by a special [SEP] token
 -   single sentence classification
 -   question answering
 -   single token tagging
-
-
-<a id="org017880a"></a>
 
 ## What is so special about the Transformer
 

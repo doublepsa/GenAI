@@ -30,6 +30,7 @@ st.sidebar.button("logout",on_click=logout)
 st.sidebar.markdown("**Navigation:**")
 st.sidebar.page_link('Home.py', label='Home')
 st.sidebar.page_link('pages/Edit.py', label='Edit')
+st.sidebar.page_link('pages/Comparison.py', label='Comparison')
 st.set_page_config(page_title="Edit Lecture", layout="centered")
 
 st.title("📚 Lecture Summarizer")

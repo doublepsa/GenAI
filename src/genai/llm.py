@@ -126,10 +126,26 @@ def summarize_notes(notes_text, course_name, lec_num, username):
         return "Error: User or Lecture not found."
 
     # 2. LLM Processing
-    prompt = f"""Summarise the attached lecture notes into one sentence per topic. 
-    Topic titles in **bold**, no bullet points.
+    prompt = f"""# ROLE:
+You are an expert summarizer
 
-    Notes: {notes_text}"""
+# INPUT:
+You will be given the lecture notes of a student for a single lecture
+
+# TASK:
+Summarize the notes. Each unique topic should be given one sentence. Do NOT add or infer any context that is not provided by the notes. Take the notes to be grounnd truth information WITHOUT EXCEPTION. Do NOT correct anything you think is a mistake.
+
+# OUTPUT FORMAT:
+Output the series of sentences that comprise the summary. Each sentence should be on its own line with a bold title before it, like such:
+
+*<sentence 1 title>*: <sentence 1>
+*<sentence 2 title>*: <sentence 2>
+
+# NOTES:
+{notes_text}
+
+# RESPONSE:
+"""
 
     response = client.models.generate_content(
         model=model,
@@ -196,4 +212,73 @@ After your response the user may ask follow up questions about your output. Resp
             prompt
         ],
     )
+    return response.text
+
+def student_notes_comparison(course_name, lecture_number, username):
+    
+    """
+    Uses Gemini to compare a specific student notes file with all the others for the same lecture.
+
+    Args:
+        base_data_path: The root directory for the data (e.g., 'data/').
+        lecture_number: The specific lecture number to analyze (e.g., 1 for 'lecture-1').
+        student_notes: The specific student notes to compare (e.g., 'tylers-notes.md').
+    """
+
+    if not MongoDBConnection.setup():
+        return "Database connection failed."
+    course_obj = Course.objects(name=course_name).first()
+    lecture_obj = Lecture.objects(course=course_obj,lecture_number=str(lecture_number)).first()
+    user_obj = User.objects(username=username).first()
+    student_notes = Note.objects(lecture=lecture_obj,author__ne=user_obj)
+    this_note = Note.objects(lecture=lecture_obj,author=user_obj).first()
+
+
+    if len(student_notes) < 1:
+        raise Exception(f"Not enough student notes for lecture-{lecture_number} to perform comparison.", UserWarning)
+        return ""
+    if this_note is None:
+        raise Exception(f"Specified student notes file {student_notes} not found in lecture-{lecture_number}.", UserWarning)
+        return ""
+    this_note=this_note.content
+    other_notes=[]
+    for note in student_notes:
+        other_notes.append(note.summary)
+    prompt=f"""# ROLE:
+You are an expert study assistant.
+
+# INPUT FORMAT:
+You will be given one text, written in markdown. This is the user's notes on a lecture.
+
+You will also be given a list of passages. These are summaries of the notes taken by other students who also attended the lecture.
+
+# TASK:
+Your job is to compare the user's notes with all of the summaries.
+
+Identify every deficiency in the user notes. Deficiencies you should look out for include gaps in content, lacking depth of explanation, and lacking clarity.
+
+Suggest what might be missing, but do not comment about amending the notes.
+
+# IMPORTANT CONSIDERATIONS:
+1. Topics repeated in many summaries can be assumed to be the most important topics to the lecture, and should be given the most importance
+2. Do not comment on areas where the user has more/better information than the other students. These occurances can be assumed to be a result of the summarization losing information, not the user adding unnecessary information.
+3. Do not refer to the summaries as such in the output. Instead, compare the user's notes to "the rest of the class", "other students", and similar labels.
+
+# OUTPUT FORMAT:
+You will output a region of markdown text with one header, labeled "Gaps". As a numbered list, add the detected deficiencies below the header.
+
+STUDENT NOTES:
+{this_note}
+
+LIST OF OTHER NOTES:
+{other_notes}
+
+OUTPUT:
+"""
+    response = client.models.generate_content(
+        model="gemini-3-pro-preview",
+        contents=[prompt],
+    )
+
+    # save student notes comparison to a text file
     return response.text

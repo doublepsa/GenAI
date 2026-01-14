@@ -37,11 +37,11 @@ In order to run the project, one needs a Gemini API Key. It is possible to get i
 4. add your Gemini API key to your environment by executing `export GEMINI_API_KEY=<YOUR_KEY>` in a terminal emulator
 
 
-# MongoDB
+# MongoDB (Linux)
 
 This project relies on a local mongodb database. Download mongodb and mongosh through your favorite package manager.
 
-Ensure a storage directory exists for the database and for its logs
+Ensure storage directories exists for the database and for its logs, and give mongodb control over them.
 ```
 sudo mkdir -p /var/lib/mongodb
 sudo chown -R mongodb:mongodb /var/lib/mongodb

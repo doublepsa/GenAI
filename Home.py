@@ -2,7 +2,7 @@ import streamlit as st
 from src.genai.llm import summarize_notes,compare_notes
 from src.genai.db_configs.db_add import add_note
 from src.genai.db_configs.db_connection import MongoDBConnection
-from genai.db_configs.schemas import Lecture,Course,User
+from src.genai.db_configs.schemas import Lecture,Course,User
 # Set up session state to initial values
 
 if not MongoDBConnection.setup():
@@ -10,7 +10,7 @@ if not MongoDBConnection.setup():
     st.stop()
 
 def get_course_names():
-    """Initializes connection and fetches unique course names from DB."""
+    """Fetches unique course names from DB."""
     try:
         # Use MongoEngine to get distinct values from the 'name' field
         courses = Course.objects.distinct("name")
@@ -20,7 +20,7 @@ def get_course_names():
         return []
 # @st.cache_data(ttl=3600)
 def get_available_lectures(course_name):
-    """Initializes connetion and fetches all lectures from DB"""
+    """Fetches all lectures from DB"""
     try:
         course=Course.objects(name=course_name).first()
         lectures=Lecture.objects(course=course)
@@ -31,10 +31,12 @@ def get_available_lectures(course_name):
         return []
 
     
-if 'result' not in st.session_state:
-    st.session_state.result = ''
+# Set up initial state values
+# if 'result' not in st.session_state:
+    # st.session_state.result = ''
 if 'user' not in st.session_state:
     st.session_state.user = None
+# Hide sidebar if no user is logged in
 if st.session_state.user==None:
     st.markdown(
         """
@@ -68,6 +70,7 @@ else:
     st.sidebar.markdown("**Navigation:**")
     st.sidebar.page_link('Home.py', label='Home')
     st.sidebar.page_link('pages/Edit.py', label='Edit')
+    st.sidebar.page_link('pages/Comparison.py', label='Comparison')
     st.title("Knowledge Gap Detector")
 
     st.write("Welcome! This is a knowledge gap identifier. Please choose a lecture and submit your notes.")
@@ -76,34 +79,37 @@ else:
     # Select Course
     course_name = st.selectbox("Select Course",courses,key="selected_course")
     lectures=get_available_lectures(course_name)
-    # Select lecture
-    lecture_name=st.selectbox("Select which lecture your notes are for", lectures.keys(),key="selected_lecture")
-    lecture_num=lectures[lecture_name]
-    # Option 1: File Upload
-    uploaded_file=st.file_uploader("Upload a Markdown file (.md)", type=["md", "txt"],key="uploaded_file")
+    if len(lectures)==0:
+        st.error("Unfortunately, No courses were found in the database. If you are a lecturer, go to the `Edit` page to add your first lecture. If you are a student, ask your professor if they would join the app. If you think you recieved this message in error, please contact your administrator.")
+    else:
+        # Select lecture
+        lecture_name=st.selectbox("Select which lecture your notes are for", lectures.keys(),key="selected_lecture")
+        lecture_num=lectures[lecture_name]
+        # Option 1: File Upload
+        uploaded_file=st.file_uploader("Upload a Markdown file (.md)", type=["md", "txt"],key="uploaded_file")
 
-    # Option 2: Plain Text
-    notes=st.text_area("Or, paste your notes here", key="notes",height=300)
+        # Option 2: Plain Text
+        notes=st.text_area("Or, paste your notes here", key="notes",height=300)
 
-    # Form Submit
-    if st.button('Submit my picks',type="primary"): 
-        # Prioritize uploaded file content over text area
-        if st.session_state.uploaded_file is not None:
-            # Read the file and decode it to string
-            final_notes = st.session_state.uploaded_file.getvalue().decode("utf-8")
-        else:
-            final_notes = st.session_state.notes
+        # Form Submit
+        if st.button('Submit my picks',type="primary"): 
+            # Prioritize uploaded file content over text area
+            if st.session_state.uploaded_file is not None:
+                # Read the file and decode it to string
+                final_notes = st.session_state.uploaded_file.getvalue().decode("utf-8")
+            else:
+                final_notes = st.session_state.notes
 
-        summary=''
-        if final_notes.strip():
-            summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
-            st.session_state.result = summary
-            # TODO: send summary to db
-            # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
-        else:
-            st.error("Please provide some notes before submitting.")
-        if summary:
-            comparision = compare_notes(summary, course_name,lecture_num)
+            summary=''
+            if final_notes.strip():
+                summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
+                # st.session_state.result
+                # TODO: send summary to db
+                # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
+            else:
+                st.error("Please provide some notes before submitting.")
+            if summary:
+                comparision = compare_notes(summary, course_name,lecture_num)
 
-            # Display result
-            st.markdown(comparision)
+                # Display result
+                st.markdown(comparision)

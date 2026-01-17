@@ -5,9 +5,11 @@ import os
 # Optional real import:
 # from pymongo import MongoClient
 
+# Load environment variables for DB connection
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 MONGO_DB_NAME = os.getenv("MONGO_DB_NAME", "testdb")
 
+# Placeholder functions for MongoDB operations
 
 def get_mongo_client():
     """

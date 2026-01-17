@@ -6,14 +6,23 @@ from src.genai.db_configs.schemas import Course, Lecture, Slide, Note, User
 from src.genai.db_configs.db_connection import MongoDBConnection
 import warnings
 
+# Initialize Gemini client
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 model="gemini-3-pro-preview"
 
 
 def summarize_pdf(pdf_bytes, course_name, lec_num):
+    """Summarizes PDF lecture slides and saves to the Slide collection.
+    Args:
+        pdf_bytes: The bytes of the uploaded PDF file.
+        course_name: The name of the course.
+        lec_num: The lecture number.
+    """
+
+    # Ensure connection to db
     if not MongoDBConnection.setup():
         return "Database connection failed."
-
+    
     # 1. Manual Get or Create for Course
     course_obj = Course.objects(name=course_name).first()
     if not course_obj:
@@ -39,9 +48,9 @@ def summarize_pdf(pdf_bytes, course_name, lec_num):
         lecture_obj = Lecture(course=course_obj, lecture_number=str(lec_num)).save()
 
     '''
-    #Old Promt
-    #prompt = """Summarise the attached slides into one sentence per topic. 
-    #Topic titles in **bold**, no bullet points, no intro/outro."""
+    # Old Prompt
+    # prompt = """Summarise the attached slides into one sentence per topic. 
+    # Topic titles in **bold**, no bullet points, no intro/outro."""
     # 3. LLM Processing
     prompt = """
     # ROLE
@@ -85,8 +94,8 @@ def summarize_pdf(pdf_bytes, course_name, lec_num):
 
     # RESPONSE:
     """
-
     
+    # LLM Call
     try:
         response = client.models.generate_content(
             model=model,
@@ -98,6 +107,7 @@ def summarize_pdf(pdf_bytes, course_name, lec_num):
         summary_text = response.text
     except Exception as e:
         return f"LLM Error: {str(e)}"
+    
     # 4. Save to Slide Collection
     # This creates a new Slide document linked to the specific Lecture object
     try:
@@ -113,7 +123,14 @@ def summarize_pdf(pdf_bytes, course_name, lec_num):
     return summary_text
 
 def summarize_notes(notes_text, course_name, lec_num, username):
-    """Summarizes markdown notes and saves to the Note collection."""
+    """Summarizes markdown notes and saves to the Note collection.
+    Args:
+        notes_text: The markdown text of the student's notes.
+        course_name: The name of the course.
+        lec_num: The lecture number.
+        username: The username of the student authoring the notes."""
+    
+    # Ensure connection to db
     if not MongoDBConnection.setup():
         return "Database connection failed."
 
@@ -146,7 +163,7 @@ Output the series of sentences that comprise the summary. Each sentence should b
 
 # RESPONSE:
 """
-
+    # LLM Call
     response = client.models.generate_content(
         model=model,
         contents=[prompt],
@@ -164,8 +181,18 @@ Output the series of sentences that comprise the summary. Each sentence should b
     return summary_text
 
 def compare_notes(summary,course_name,lecture_num):
+    """
+    Uses Gemini to compare a specific student notes file with a summary of the lecture.
+    Args:
+        summary: The specific student notes to compare (e.g., 'tylers-notes.md').
+        course_name: The name of the course.
+        lecture_number: The specific lecture number to analyze (e.g., 1 for 'lecture-1').
+    """
+    # Ensure connection to db
     if not MongoDBConnection.setup():
         return "Database connection failed."
+    
+    # Fetch all necessary objects from database
     course_obj = Course.objects(name=course_name).first()
     lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
     slide_obj = Slide.objects(lecture=lecture_obj).first()
@@ -206,6 +233,7 @@ After your response the user may ask follow up questions about your output. Resp
 
 # RESPONSE:
 """
+    # LLM Call
     response = client.models.generate_content(
         model="gemini-3-pro-preview",
         contents=[
@@ -217,6 +245,10 @@ After your response the user may ask follow up questions about your output. Resp
 def student_notes_comparison(course_name, lecture_number, username):
     """
     Uses Gemini to compare a specific student notes file with all the others for the same lecture.
+    Args:
+        course_name: The name of the course.
+        lecture_number: The specific lecture number to analyze (e.g., 1 for 'lecture-1').
+        username: The specific student notes to compare (e.g., 'tylers-notes.md').
     """
 
     # Ensure connection to db
@@ -230,14 +262,11 @@ def student_notes_comparison(course_name, lecture_number, username):
     student_notes = Note.objects(lecture=lecture_obj,author__ne=user_obj)
     this_note = Note.objects(lecture=lecture_obj,author=user_obj).first()
 
-
     # Ensure objects are fetched
     if len(student_notes) < 1:
         raise Exception(f"Not enough student notes for lecture-{lecture_number} to perform comparison.", UserWarning)
-        return ""
     if this_note is None:
         raise Exception(f"Specified student notes file {student_notes} not found in lecture-{lecture_number}.", UserWarning)
-        return ""
     this_note=this_note.content
     other_notes=[]
     for note in student_notes:
@@ -274,6 +303,7 @@ LIST OF OTHER NOTES:
 
 OUTPUT:
 """
+    # LLM Call
     response = client.models.generate_content(
         model="gemini-3-pro-preview",
         contents=[prompt],

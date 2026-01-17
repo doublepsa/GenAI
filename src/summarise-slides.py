@@ -37,6 +37,8 @@ def summarise_slides(base_data_path: str, lecture_number: Union[int, List[int]])
         prompt = "Summarise the attached slides into one sentence per topic. \
             Please do not include any introductory or concluding remarks. \
             Every topic title should be in bold and do not use bullet points."
+        
+        # Summarize each slide deck in the lecture folder
         for file_path in lecture_slides:
             response = client.models.generate_content(
                 model="gemini-3-pro-preview",
@@ -48,6 +50,7 @@ def summarise_slides(base_data_path: str, lecture_number: Union[int, List[int]])
                 ],
             )
             responses_lec_num.append(response.text)
+        
         # merge all per-file responses into one string with a blank line between items
         merged = "\n\n".join(responses_lec_num)
 
@@ -60,6 +63,7 @@ def summarise_slides(base_data_path: str, lecture_number: Union[int, List[int]])
         responses.append((lec_num, merged))
     return responses
 
+# Example usage
 if __name__ == "__main__":
     base_data_path = 'data/generative-ai'
     lecture_number = list(range(1, 7))  # Lectures 1 to 6

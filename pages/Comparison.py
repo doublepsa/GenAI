@@ -63,7 +63,7 @@ if st.button('Run the LLM',type="primary"):
         student_note=Note.objects(author=user).first().content
         note_comparison = compare_notes(student_note, course_name,lecture_num)
     except Exception as e:
-        raise e
+        st.error(e)
     if note_comparison:
         # Display result
         st.markdown("# Comparison against the lecture")
@@ -72,7 +72,7 @@ if st.button('Run the LLM',type="primary"):
         # compares the user's notes with every other student note
         student_comparison=student_notes_comparison(course_name,lecture_num,st.session_state.user)
     except Exception as e:
-        raise e
+        st.error(e)
     if student_comparison:
         # Display result
         st.markdown("# Comparison against other students")

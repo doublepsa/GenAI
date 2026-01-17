@@ -5,7 +5,7 @@ Project of the lecture 194.207 Generative AI (VU 4,0) 2025W
 # Installation
 After downloading the sourcecode with `git clone`
 
-Enter the created directory with `cd Genai`
+Enter the created directory with `cd GenAI`
 
 To download dependencies, run
 

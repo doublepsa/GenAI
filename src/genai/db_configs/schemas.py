@@ -2,6 +2,9 @@ from mongoengine import Document, StringField, ListField, ReferenceField, DateTi
 from datetime import datetime
 from genai.db_configs.db_connection import MongoDBConnection
 
+# ----------------------
+# User Schema
+# ----------------------
 class User(Document):
     meta = {'collection': 'user'} # Explicitly match your DB collection name
     username = StringField(required=True, unique=True)
@@ -24,6 +27,9 @@ class Lecture(Document):
     # LINK 1: The Lecture now explicitly belongs to a Course
     course = ReferenceField(Course, required=True)
 
+# ----------------------
+# Slide Schema
+# ----------------------
 class Slide(Document):
     meta = {'collection': 'slide'}
     title = StringField(required=True)

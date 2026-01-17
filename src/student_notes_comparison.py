@@ -1,8 +1,6 @@
 import warnings
 from google import genai
-from google.genai import types
 from pathlib import Path
-from typing import Union, List
 import os
 from dotenv import load_dotenv
 import warnings
@@ -28,9 +26,12 @@ def student_notes_comparison(base_data_path: str, lecture_number: int, student_n
     lecture_folder = Path(base_data_path) / f'lecture-{lecture_number}'
 
     print(f"--- Comparing Student Notes in: {lecture_folder} ---")
+    
+    # get the names of the notes files in the lecture folder
     lecture_notes = list(lecture_folder.glob('*.md'))
-    lecture_notes_names = [path.name for path in lecture_notes]
+    lecture_notes_names = [path.name for path in lecture_notes] 
 
+    # Warn and exit if not enough notes or specified note not found
     if len(lecture_notes) <= 1:
         warnings.warn(f"Not enough student notes for lecture-{lecture_number} to perform comparison.", UserWarning)
         return ""
@@ -61,6 +62,7 @@ def student_notes_comparison(base_data_path: str, lecture_number: int, student_n
     return response.text
 
 if __name__ == "__main__":
+    # Example usage
     base_data_path = 'data/generative-ai'
     
     student_notes_comparison = student_notes_comparison(base_data_path, 6, 'tylers-notes.md')

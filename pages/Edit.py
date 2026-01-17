@@ -21,7 +21,7 @@ def get_course_names():
 
 
 # Switch to main page if no user is logged in
-if "user "not in st.session_state or st.session_state.user==None:
+if "user" not in st.session_state or st.session_state.user==None:
     st.switch_page("Home.py")
 
 # Sidebar navigation

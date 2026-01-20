@@ -100,51 +100,51 @@ else: # otherwise, show the actual page
                 final_notes = st.session_state.notes
 
             summary=''
-        if final_notes.strip():
-            summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
-            st.session_state.result = summary
+            if final_notes.strip():
+                summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
+                st.session_state.result = summary
 
-            # Fetch lecture and slide summary
-            course_obj = Course.objects(name=course_name).first()
-            lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
-            slide_obj = Slide.objects(lecture=lecture_obj).first()
+                # Fetch lecture and slide summary
+                course_obj = Course.objects(name=course_name).first()
+                lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
+                slide_obj = Slide.objects(lecture=lecture_obj).first()
 
-            # Fetch the saved note
-            note_obj = Note.objects(
-                lecture=lecture_obj,
-                author=User.objects(username=st.session_state.user).first()
-            ).first()
+                # Fetch the saved note
+                note_obj = Note.objects(
+                    lecture=lecture_obj,
+                    author=User.objects(username=st.session_state.user).first()
+                ).first()
 
-            # Compute deterministic score
-            scores = compute_knowledge_score(
-                reference=slide_obj.summary,
-                candidate=summary
-            )
+                # Compute deterministic score
+                scores = compute_knowledge_score(
+                    reference=slide_obj.summary,
+                    candidate=summary
+                )
 
-            # Persist scores
-            note_obj.rouge_score = scores["rougeL"]
-            note_obj.bleu_score = scores["bleu"]
-            note_obj.knowledge_score = scores["final_score"]
-            note_obj.save()
-            # TODO: send summary to db
-            # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
-        else:
-            st.error("Please provide some notes before submitting.")
-        if summary:
-            comparision = compare_notes(summary, course_name,lecture_num)
+                # Persist scores
+                note_obj.rouge_score = scores["rougeL"]
+                note_obj.bleu_score = scores["bleu"]
+                note_obj.knowledge_score = scores["final_score"]
+                note_obj.save()
+                # TODO: send summary to db
+                # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
+            else:
+                st.error("Please provide some notes before submitting.")
+            if summary:
+                comparision = compare_notes(summary, course_name,lecture_num)
 
-            # Display result
-            st.markdown(comparision)
-            st.divider()
-            st.subheader("📊 Knowledge Coverage Score")
-            st.metric(
-                label="Lecture Coverage",
-                value=f"{scores['final_score']} / 100"
+                # Display result
+                st.markdown(comparision)
+                st.divider()
+                st.subheader("📊 Knowledge Coverage Score")
+                st.metric(
+                    label="Lecture Coverage",
+                    value=f"{scores['final_score']} / 100"
 
-                
-            )
 
-            st.markdown("**Detailed Score Breakdown:**")
-            st.markdown(f"- ROUGE-L: {scores['rougeL']:.2f}")
-            st.markdown(f"- BLEU: {scores['bleu']:.2f}")
-            st.markdown(f"- Final Knowledge Score: {scores['final_score']:.2f} / 100")
+                )
+
+                st.markdown("**Detailed Score Breakdown:**")
+                st.markdown(f"- ROUGE-L: {scores['rougeL']:.2f}")
+                st.markdown(f"- BLEU: {scores['bleu']:.2f}")
+                st.markdown(f"- Final Knowledge Score: {scores['final_score']:.2f} / 100")

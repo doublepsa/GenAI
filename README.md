@@ -10,8 +10,9 @@ Enter the created directory with `cd GenAI`
 To download dependencies, run
 
 ```
+uv venv
 uv build
-uv run pip install .
+uv pip install .
 ```
 
 
@@ -82,3 +83,5 @@ or by running `mongosh`, if this command doesn't immediately return an error, mo
 
 # Running the Project
 To start up the server locally, run `uv run streamlit run Home.py`
+
+You can also run `uv run db_run.py` to initialize the database with a lecture and some test user notes for the comparison page.

@@ -3,6 +3,8 @@ from src.genai.llm import summarize_notes,compare_notes
 from src.genai.db_configs.db_add import add_note
 from src.genai.db_configs.db_connection import MongoDBConnection
 from src.genai.db_configs.schemas import Lecture,Course,User
+from src.genai.scoring import compute_knowledge_score
+from genai.db_configs.schemas import Slide, Note
 
 # Initialize mongodb connection
 if not MongoDBConnection.setup():
@@ -107,6 +109,32 @@ else: # otherwise, show the actual page
             if final_notes.strip():
                 summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
 
+                st.session_state.result = summary
+
+                # Fetch lecture and slide summary
+                course_obj = Course.objects(name=course_name).first()
+                lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
+                slide_obj = Slide.objects(lecture=lecture_obj).first()
+
+                # Fetch the saved note
+                note_obj = Note.objects(
+                    lecture=lecture_obj,
+                    author=User.objects(username=st.session_state.user).first()
+                ).first()
+
+                # Compute deterministic score
+                scores = compute_knowledge_score(
+                    reference=slide_obj.summary,
+                    candidate=summary
+                )
+
+                # Persist scores
+                note_obj.rouge_score = scores["rougeL"]
+                note_obj.bleu_score = scores["bleu"]
+                note_obj.knowledge_score = scores["final_score"]
+                note_obj.save()
+                # TODO: send summary to db
+                # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
             else:
                 st.error("Please provide some notes before submitting.")
             if summary:
@@ -114,3 +142,16 @@ else: # otherwise, show the actual page
 
                 # Display result
                 st.markdown(comparision)
+                st.divider()
+                st.subheader("📊 Knowledge Coverage Score")
+                st.metric(
+                    label="Lecture Coverage",
+                    value=f"{scores['final_score']} / 100"
+
+
+                )
+
+                st.markdown("**Detailed Score Breakdown:**")
+                st.markdown(f"- ROUGE-L: {scores['rougeL']:.2f}")
+                st.markdown(f"- BLEU: {scores['bleu']:.2f}")
+                st.markdown(f"- Final Knowledge Score: {scores['final_score']:.2f} / 100")

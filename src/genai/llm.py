@@ -107,16 +107,22 @@ def summarize_pdf(pdf_bytes, course_name, lec_num):
         summary_text = response.text
     except Exception as e:
         return f"LLM Error: {str(e)}"
-    
+
     # 4. Save to Slide Collection
-    # This creates a new Slide document linked to the specific Lecture object
     try:
-        Slide(
-            title=f"Slides - {course_name} Lecture {lec_num}",
-            file_url="local_upload", # Placeholder for the file path
-            lecture=lecture_obj,
-            summary=summary_text
-        ).save()
+        slide=Slide.objects(lecture=lecture_obj).first()
+        if slide:
+            # Slide already exists, so update
+            slide.summary=summary_text
+            slide.save()
+        else:
+        # Create new slide
+            Slide(
+                title=f"Slides - {course_name} Lecture {lec_num}",
+                file_url="local_upload", # Placeholder for the file path
+                lecture=lecture_obj,
+                summary=summary_text
+            ).save()
     except Exception as e:
         return f"Database Save Error: {str(e)}"
 
@@ -170,13 +176,24 @@ Output the series of sentences that comprise the summary. Each sentence should b
     )
     summary_text = response.text
 
-    # 3. Save to Note Collection
-    Note(
-        content=notes_text,
-        author=user_obj,
-        lecture=lecture_obj,
-        summary=summary_text
-    ).save()
+    # 3. Save to database
+    try:
+        note=Note.objects(author=user_obj,lecture=lecture_obj).first()
+        if note:
+            # Note already exists, so update
+            note.summary=summary_text
+            note.content=notes_text
+            note.save()
+        else:
+        # Create new Note
+            Note(
+                content=notes_text,
+                author=user_obj,
+                lecture=lecture_obj,
+                summary=summary_text
+            ).save()
+    except Exception as e:
+        return f"Database Save Error: {str(e)}"
 
     return summary_text
 

@@ -61,10 +61,11 @@ lecture_num=lectures[lecture_name]
 # Form Submit
 if st.button('Run the LLM',type="primary"): 
     try:
-        # compares the user's notes with the lecture summary
-        user=User.objects(username=st.session_state.user).first()
-        student_note=Note.objects(author=user).first().content
-        note_comparison = compare_notes(student_note, course_name, lecture_num)
+        with st.spinner('Comparing your notes with lecture slides... Please wait ⏳'):
+            # compares the user's notes with the lecture summary
+            user=User.objects(username=st.session_state.user).first()
+            student_note=Note.objects(author=user).first().content
+            note_comparison = compare_notes(student_note, course_name, lecture_num)
     except Exception as e:
         st.error(e)
     if note_comparison:
@@ -76,6 +77,7 @@ if st.button('Run the LLM',type="primary"):
         student_comparison=student_notes_comparison(course_name,lecture_num,st.session_state.user)
     except Exception as e:
         st.error(e)
+        student_comparison = None
     if student_comparison:
         # Display result
         st.markdown("# Comparison against other students")

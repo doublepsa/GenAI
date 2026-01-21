@@ -107,34 +107,35 @@ else: # otherwise, show the actual page
 
             summary=''
             if final_notes.strip():
-                summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
+                with st.spinner('Processing your notes... Please wait, this may take a moment ⏳'):
+                    summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
 
-                st.session_state.result = summary
+                    st.session_state.result = summary
 
-                # Fetch lecture and slide summary
-                course_obj = Course.objects(name=course_name).first()
-                lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
-                slide_obj = Slide.objects(lecture=lecture_obj).first()
+                    # Fetch lecture and slide summary
+                    course_obj = Course.objects(name=course_name).first()
+                    lecture_obj = Lecture.objects(course=course_obj, lecture_number=str(lecture_num)).first()
+                    slide_obj = Slide.objects(lecture=lecture_obj).first()
 
-                # Fetch the saved note
-                note_obj = Note.objects(
-                    lecture=lecture_obj,
-                    author=User.objects(username=st.session_state.user).first()
-                ).first()
+                    # Fetch the saved note
+                    note_obj = Note.objects(
+                        lecture=lecture_obj,
+                        author=User.objects(username=st.session_state.user).first()
+                    ).first()
 
-                # Compute deterministic score
-                scores = compute_knowledge_score(
-                    reference=slide_obj.summary,
-                    candidate=summary
-                )
+                    # Compute deterministic score
+                    scores = compute_knowledge_score(
+                        reference=slide_obj.summary,
+                        candidate=summary
+                    )
 
-                # Persist scores
-                note_obj.rouge_score = scores["rougeL"]
-                note_obj.bleu_score = scores["bleu"]
-                note_obj.knowledge_score = scores["final_score"]
-                note_obj.save()
-                # TODO: send summary to db
-                # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
+                    # Persist scores
+                    note_obj.rouge_score = scores["rougeL"]
+                    note_obj.bleu_score = scores["bleu"]
+                    note_obj.knowledge_score = scores["final_score"]
+                    note_obj.save()
+                    # TODO: send summary to db
+                    # add_note(user="User1", lecture=st.session_state.lecture, summary=summary, content=final_notes)
             else:
                 st.error("Please provide some notes before submitting.")
             if summary:

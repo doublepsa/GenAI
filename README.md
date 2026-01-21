@@ -3,11 +3,25 @@ Project of the lecture 194.207 Generative AI (VU 4,0) 2025W
 
 
 # Installation
+
+Use your preferred terminal.
+
 After downloading the sourcecode with `git clone`
 
 Enter the created directory with `cd GenAI`
 
-To download dependencies, run
+Make sure to have an adequate python version. To check this, run `pyenv versions`
+
+If you don't have 3.13+, install it:
+
+```
+pyenv install 3.13.0
+pyenv global 3.13.0
+```
+
+If you do not have uv installed, install it first with `pip install uv`
+
+To download dependencies, run:
 
 ```
 uv venv
@@ -80,6 +94,27 @@ Finally, enable the mongodb service with `sudo systemctl enable --now mongodb`
 You can check that it is running without errors with `systemctl status mongodb`
 
 or by running `mongosh`, if this command doesn't immediately return an error, mongodb is running. Use `exit` to exit the mongo shell.
+
+# MongoDB (Windows)
+
+**Option A: Use WSL (Recommended)**
+Follow the Linux instructions above in your WSL terminal.
+
+**Option B: Native Windows Installation**
+1. Download MongoDB Community Server from https://www.mongodb.com/try/download/community
+2. Run the installer and follow the setup wizard
+3. Download mongosh from https://www.mongodb.com/try/download/shell
+4. MongoDB will run as a Windows service by default
+5. Add the paths of these two programmes to the system variable `Path`
+   1. Press the Windows Key and search for "Edit the system environment variables".
+   2. In the window that appears, click the Environment Variables button at the bottom right.
+   3. Under the "System variables" section (the bottom list), find the variable named Path and click Edit.
+   4. Click New and paste the path to your shell's bin folder. By default, it is usually: `C:\Users\user-name\Downloads\mongosh-2.6.0-win32-x64\bin`
+   5. Click New and paste the path to your server's bin folder. By default, it is usually: `C:\Program Files\MongoDB\Server\8.x\bin`
+   6. Click OK on all windows to confirm and save the changes.
+6. Verify it's running: open PowerShell (or reopen it, if it was already opened) and run `mongosh`
+
+
 
 # Running the Project
 To start up the server locally, run `uv run streamlit run Home.py`

@@ -1,4 +1,3 @@
-from genai.db_configs.db_add import add_lecture, add_note, add_user
 from src.genai.db_configs.db_connection import MongoDBConnection
 from src.genai.db_configs.schemas import User,Course,Lecture,Slide,Note
 from src.genai.llm import summarize_pdf,summarize_notes

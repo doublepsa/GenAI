@@ -14,20 +14,6 @@ Lecture.objects.delete()
 Slide.objects.delete()
 Note.objects.delete()
 
-# 2. Retrieve (or Create) the User and Lecture you want to link
-course = "GenAI WS25"
-lec1 = add_lecture(course, "Intro to LLMs", "1")
-student = add_user("jane_doe", "jane@uni.edu")
-
-# 3. Add the Markdown Note
-if student and lec1:
-    # We pass the filename to 'md_file_path'
-    add_note(
-        user_obj=student,
-        lecture_obj=lec1,
-        title="lecture 1 notes",
-        md_file_path="data/generative-ai/lecture-6/buraks-notes.md"  # <--- The script will read this file
-    )
 User(username="test1",email="test1").save()
 User(username="test2",email="test2").save()
 User(username="test3",email="test3").save()

@@ -28,12 +28,12 @@ with open("data/generative-ai/lecture-1/slides.pdf","rb") as f:
 
 summarize_pdf(pdf_bytes,"Genai",'1')
 
-with open("data/generative-ai/lecture-1/student1.md","r") as f:
+with open("data/generative-ai/lecture-1/student1.md","r", encoding="utf-8") as f:
     notes_text=f.read()
 summarize_notes(notes_text,"Genai","1","test1")
-with open("data/generative-ai/lecture-1/student2.md","r") as f:
+with open("data/generative-ai/lecture-1/student2.md","r", encoding="utf-8") as f:
     notes_text=f.read()
 summarize_notes(notes_text,"Genai","1","test2")
-with open("data/generative-ai/lecture-1/student3.md","r") as f:
+with open("data/generative-ai/lecture-1/student3.md","r", encoding="utf-8") as f:
     notes_text=f.read()
 summarize_notes(notes_text,"Genai","1","test3")

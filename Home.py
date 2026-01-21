@@ -14,13 +14,16 @@ def get_course_names():
     try:
         # Use MongoEngine to get distinct values from the 'name' field
         courses = Course.objects.distinct("name")
-        return courses
+        return sorted(courses)
     except Exception as e:
         st.error(f"Error fetching courses: {e}")
         return []
 # @st.cache_data(ttl=3600)
+
 def get_available_lectures(course_name):
-    """Fetches all lectures from DB for course course_name. Returns a dictionary whose keys are the course name + lecture number, and values are just the number"""
+    """ Fetches all lectures from DB for course course_name. 
+    Returns a dictionary whose keys are the course name + lecture number, and values are just the number.
+    """
     try:
         course=Course.objects(name=course_name).first()
         lectures=Lecture.objects(course=course)
@@ -29,7 +32,6 @@ def get_available_lectures(course_name):
     except Exception as e:
         st.error(str(e))
         return []
-
     
 # Set up initial state values
 if 'user' not in st.session_state:
@@ -51,6 +53,7 @@ if st.session_state.user==None: # if no user is logged in, show a login page
     username=st.text_input("Username")
     if st.button("Sign in"):
         user=User.objects(username=username).first()
+        # If user not found, show error and suggest signing up
         if not user:
             st.error("Username not found, do you want to sign up?")
         else:
@@ -77,13 +80,16 @@ else: # otherwise, show the actual page
     course_name = st.selectbox("Select Course",courses,key="selected_course")
     lectures=get_available_lectures(course_name)
     if len(lectures)==0: # Because courses are created on lecture upload, this only occurs if there are no courses
-        st.error("Unfortunately, No courses were found in the database. If you are a lecturer, go to the `Edit` page to add your first lecture. If you are a student, ask your professor if they would join the app. If you think you recieved this message in error, please contact your administrator.")
+        st.error("Unfortunately, no courses were found in the database. " \
+        "If you are a lecturer, go to the `Edit` page to add your first lecture. " \
+        "If you are a student, ask your professor if they would join the app. " \
+        "If you think this message is an error, please contact your administrator.")
     else:
         # Select lecture
         lecture_name=st.selectbox("Select which lecture your notes are for", lectures.keys(),key="selected_lecture")
         lecture_num=lectures[lecture_name]
         # Option 1: File Upload
-        uploaded_file=st.file_uploader("Upload a Markdown file (.md)", type=["md", "txt"],key="uploaded_file")
+        uploaded_file=st.file_uploader("Upload a Markdown file (.md)", type=["md"],key="uploaded_file")
 
         # Option 2: Plain Text
         notes=st.text_area("Or, paste your notes here", key="notes",height=300)
@@ -100,10 +106,11 @@ else: # otherwise, show the actual page
             summary=''
             if final_notes.strip():
                 summary = summarize_notes(final_notes,course_name,lecture_num,st.session_state.user)
+
             else:
                 st.error("Please provide some notes before submitting.")
             if summary:
-                comparision = compare_notes(summary, course_name,lecture_num)
+                comparision = compare_notes(summary, course_name, lecture_num)
 
                 # Display result
                 st.markdown(comparision)

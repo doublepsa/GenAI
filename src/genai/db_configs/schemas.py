@@ -1,6 +1,4 @@
-from mongoengine import Document, StringField, ListField, ReferenceField, DateTimeField
-from datetime import datetime
-from genai.db_configs.db_connection import MongoDBConnection
+from mongoengine import Document, StringField, ListField, ReferenceField
 
 # ----------------------
 # User Schema

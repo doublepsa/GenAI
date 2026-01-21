@@ -1,6 +1,7 @@
 import streamlit as st
 from src.genai.db_configs.schemas import User
 
+# Sign Up Page
 st.title("Sign Up")
 username=st.text_input("Create a Username")
 email=st.text_input("Add your email address")

@@ -8,7 +8,6 @@ if not MongoDBConnection.setup():
 
 student = add_user("johnny_coder", "john@coder.com")
 
-
 # 2. Retrieve (or Create) the User and Lecture you want to link
 course = "GenAI WS25"
 lec1 = add_lecture(course, "Intro to LLMs", "1")
@@ -23,5 +22,3 @@ if student and lec1:
         title="lecture 1 notes",
         md_file_path="data/generative-ai/lecture-6/buraks-notes.md"  # <--- The script will read this file
     )
-
-    
